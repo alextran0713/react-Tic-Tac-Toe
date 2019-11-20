@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+let size = 0;
+
 function Square(props) {
   const className = 'square' + (props.highlight ? ' highlight' : '');
   return (
@@ -26,7 +28,7 @@ class Board extends React.Component {
   }
 
   render() {
-    const boardSize = 4;
+    const boardSize = size;
     let squares = [];
     for(let i=0; i<boardSize; ++i) {
       let row = [];
@@ -35,7 +37,6 @@ class Board extends React.Component {
       }
       squares.push(<div key={i} className="board-row">{row}</div>);
     }
-
     return (
       <div>{squares}</div>
      );
@@ -53,8 +54,11 @@ class Game extends React.Component {
       ],
       stepNumber: 0,
       xIsNext: true,
-      ascendingOrder: true
+      ascendingOrder: true,
+      value: ''
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleClick(i) {
@@ -65,7 +69,7 @@ class Game extends React.Component {
     if (calculateWinner(squares).winner || squares[i]) {
       return;
     }
-    squares[i] = this.state.xIsNext ? "X" : "O";
+    squares[i] = this.state.xIsNext ? "X" : "O"
     this.setState({
       history: history.concat([
         {
@@ -90,6 +94,20 @@ class Game extends React.Component {
       xIsNext: (step % 2) === 0
     });
   }
+
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+  handleSubmit(event) {
+   size = this.state.value;
+   ReactDOM.render(
+     <div>
+       <div class = "status"> <Game/> </div>
+     </div>, document.getElementById("root"));
+
+   event.preventDefault();
+ }
 
   render() {
     const history = this.state.history;
@@ -135,9 +153,18 @@ class Game extends React.Component {
             squares={current.squares}
             onClick={i => this.handleClick(i)}
             winLine={winInfo.line}
+            changeValue={this.handleChange.bind()}
           />
         </div>
         <div className="game-info">
+          <form onSubmit={this.handleSubmit}>
+          <label>
+          <p>Enter the size of the grid: </p>
+          <input type="type" value={this.state.value} onChange={this.handleChange} />
+          </label>
+          <input type="submit" value="Submit" />
+          </form>
+
           <div>{status}</div>
             <button onClick={() => this.handleSortToggle()}>
               {ascendingOrder ? 'descending' : 'ascending'}
@@ -153,7 +180,6 @@ class Game extends React.Component {
 // ========================================
 
 ReactDOM.render(<Game />, document.getElementById("root"));
-
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2, 3],
