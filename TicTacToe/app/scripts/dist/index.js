@@ -31859,6 +31859,8 @@ require("./index.css");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+let size = 0;
+
 function Square(props) {
   const className = 'square' + (props.highlight ? ' highlight' : '');
   return _react.default.createElement("button", {
@@ -31879,7 +31881,7 @@ class Board extends _react.default.Component {
   }
 
   render() {
-    const boardSize = 4;
+    const boardSize = size;
     let squares = [];
 
     for (let i = 0; i < boardSize; ++i) {
@@ -31912,6 +31914,8 @@ class Game extends _react.default.Component {
       ascendingOrder: true,
       value: ''
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleClick(i) {
@@ -31954,7 +31958,12 @@ class Game extends _react.default.Component {
   }
 
   handleSubmit(event) {
-    alert('A name was submitted: ' + this.state.value);
+    size = this.state.value;
+
+    _reactDom.default.render(_react.default.createElement("div", null, _react.default.createElement("div", {
+      class: "status"
+    }, " ", _react.default.createElement(Game, null), " ")), document.getElementById("root"));
+
     event.preventDefault();
   }
 
@@ -31999,13 +32008,14 @@ class Game extends _react.default.Component {
     }, _react.default.createElement(Board, {
       squares: current.squares,
       onClick: i => this.handleClick(i),
-      winLine: winInfo.line
+      winLine: winInfo.line,
+      changeValue: this.handleChange.bind()
     })), _react.default.createElement("div", {
       className: "game-info"
     }, _react.default.createElement("form", {
       onSubmit: this.handleSubmit
     }, _react.default.createElement("label", null, _react.default.createElement("p", null, "Enter the size of the grid: "), _react.default.createElement("input", {
-      type: "number",
+      type: "type",
       value: this.state.value,
       onChange: this.handleChange
     })), _react.default.createElement("input", {
@@ -32079,7 +32089,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59341" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63882" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
